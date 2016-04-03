@@ -7,7 +7,7 @@ object DesktopLauncher {
 
   def main(args: Array[String]) {
     val config = new LwjglApplicationConfiguration
-    new LwjglApplication(new ArkanoidDemo(), config)
+    new LwjglApplication(new ArkanoidDemo, config)
   }
 
 
