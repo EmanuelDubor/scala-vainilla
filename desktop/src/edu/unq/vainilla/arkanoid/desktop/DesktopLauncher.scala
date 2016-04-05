@@ -1,14 +1,16 @@
 package edu.unq.vainilla.arkanoid.desktop
 
-import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
-import edu.unq.vainilla.arkanoid.ArkanoidDemo
+import edu.unq.vainilla.arkanoid.{ArkanoidDemo, GameConfigurator}
+import edu.unq.vainilla.core.VanillaEngine
 
 object DesktopLauncher {
 
   def main(args: Array[String]) {
-    val config = new LwjglApplicationConfiguration
-    new LwjglApplication(new ArkanoidDemo, config)
-  }
+    VanillaEngine.mainScene = new ArkanoidDemo
+    VanillaEngine.configurators += new GameConfigurator
+    VanillaEngine.configurators += new DesktopConfigurator
 
+    VanillaEngine.start
+  }
 
 }
