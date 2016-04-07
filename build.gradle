@@ -35,7 +35,7 @@ project(":desktop") {
 
 
     dependencies {
-        compile project(":core")
+        compile project(":demos")
         compile "org.scala-lang:scala-library:$scalaVersion"
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
@@ -49,6 +49,18 @@ project(":core") {
 
 
     dependencies {
+        compile "org.scala-lang:scala-library:$scalaVersion"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    }
+}
+
+project(":demos") {
+    apply plugin: "java"
+    apply plugin: "scala"
+
+    dependencies {
+        compile project(":core")
         compile "org.scala-lang:scala-library:$scalaVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
