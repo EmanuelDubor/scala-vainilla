@@ -1,6 +1,7 @@
-package edu.unq.vainilla.core
+package edu.unq.vainilla.desktop
 
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
+import edu.unq.vainilla.core.{GameScene, VanillaGame}
 import edu.unq.vainilla.core.configuration.{Configuration, Configurator, SimpleConfiguration}
 
 import scala.collection.mutable.ListBuffer

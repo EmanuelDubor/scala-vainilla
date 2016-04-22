@@ -1,1 +1,6 @@
-include 'desktop', 'core', 'demos'
+include 'desktop', 'core'
+include 'demos:arkanoid:arkanoid-core'
+findProject(':demos:arkanoid:arkanoid-core')?.name = 'arkanoid-core'
+include 'demos:arkanoid:arkanoid-desktop'
+findProject(':demos:arkanoid:arkanoid-desktop')?.name = 'arkanoid-desktop'
+

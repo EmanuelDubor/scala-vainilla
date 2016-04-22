@@ -9,5 +9,5 @@ sourceSets.main.scala.srcDirs = ["src/"]
 
 
 eclipse.project {
-    name = appName + "-demos"
+    name = appName + "-demos-arkanoid-core"
 }

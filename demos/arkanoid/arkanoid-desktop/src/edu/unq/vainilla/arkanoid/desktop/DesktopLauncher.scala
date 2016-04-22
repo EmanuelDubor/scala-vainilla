@@ -1,7 +1,8 @@
 package edu.unq.vainilla.arkanoid.desktop
 
 import edu.unq.vainilla.arkanoid.{ArkanoidDemo, GameConfigurator}
-import edu.unq.vainilla.core.VanillaEngine
+import edu.unq.vainilla.desktop.VanillaEngine
+
 
 object DesktopLauncher {
 
