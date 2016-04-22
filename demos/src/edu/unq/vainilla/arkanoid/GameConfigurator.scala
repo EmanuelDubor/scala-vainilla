@@ -1,9 +1,10 @@
 package edu.unq.vainilla.arkanoid
 
-import edu.unq.vainilla.core.configuration.{ApplicationConfiguration, ApplicationConfigurator}
+import edu.unq.vainilla.core.configuration.{Configuration, Configurator}
 
-class GameConfigurator extends ApplicationConfigurator {
-  override def configure(config: ApplicationConfiguration): Unit = {
+class GameConfigurator extends Configurator {
+  def configure(config: Configuration): Configuration = {
     config.title = "Arkanoid Demo"
+    config
   }
 }

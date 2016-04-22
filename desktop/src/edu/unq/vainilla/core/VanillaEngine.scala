@@ -1,23 +1,25 @@
 package edu.unq.vainilla.core
 
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
-import edu.unq.vainilla.core.configuration.{ApplicationConfiguration, ApplicationConfigurator}
+import edu.unq.vainilla.core.configuration.{Configuration, Configurator, SimpleConfiguration}
 
 import scala.collection.mutable.ListBuffer
 
 object VanillaEngine {
 
   var mainScene: GameScene = _
-  val configurators = ListBuffer.empty[ApplicationConfigurator]
+  val configurators = ListBuffer.empty[Configurator]
 
   def start: Unit = {
-    val config = new ApplicationConfiguration
-    configurators.foreach(_.configure(config))
+    var config: Configuration = new SimpleConfiguration
+    config = configurators.foldLeft(config) { (config, configurator) => configurator.configure(config) }
 
-    new LwjglApplication(new VanillaGame(mainScene), config)
+    VanillaGame.mainScene = mainScene
+    VanillaGame.config = config
+    new LwjglApplication(VanillaGame, config)
   }
 
-  implicit def vanillaToLwjgConfiguration(config: ApplicationConfiguration): LwjglApplicationConfiguration = {
+  implicit def vanillaToLwjgConfiguration(config: Configuration): LwjglApplicationConfiguration = {
     val lwjglConfig = new LwjglApplicationConfiguration
 
     lwjglConfig.r = config.r

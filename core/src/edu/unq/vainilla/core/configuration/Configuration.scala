@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color
 
 import scala.collection.mutable.ArrayBuffer
 
-class ApplicationConfiguration {
+trait Configuration {
 
   /** title of application **/
   var title = "My Vanilla Game"
@@ -87,8 +87,10 @@ class ApplicationConfiguration {
 
 }
 
-trait ApplicationConfigurator {
+class SimpleConfiguration extends Configuration
 
-  def configure(config: ApplicationConfiguration)
+trait Configurator {
+
+  def configure(config: Configuration): Configuration
 
 }
