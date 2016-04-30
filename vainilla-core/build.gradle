@@ -7,6 +7,11 @@ sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.scala.srcDirs = [ "src/" ]
 
+dependencies {
+    compile "org.scala-lang:scala-library:$scalaVersion"
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+}
 
 eclipse.project {
     name = appName + "-core"
