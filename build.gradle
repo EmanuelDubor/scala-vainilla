@@ -55,33 +55,6 @@ project(":core") {
     }
 }
 
-project(":demos:arkanoid:arkanoid-core") {
-    apply plugin: "java"
-    apply plugin: "scala"
-
-    dependencies {
-        compile project(":core")
-        compile "org.scala-lang:scala-library:$scalaVersion"
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-    }
-}
-
-project(":demos:arkanoid:arkanoid-desktop") {
-    apply plugin: "java"
-    apply plugin: "scala"
-
-    dependencies {
-        compile project(":desktop")
-        compile project(":core")
-        compile project(":demos:arkanoid:arkanoid-core")
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "org.scala-lang:scala-library:$scalaVersion"
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-    }
-}
-
 tasks.eclipse.doLast {
     delete ".project"
 }
