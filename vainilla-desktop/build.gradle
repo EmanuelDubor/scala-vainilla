@@ -7,6 +7,13 @@ sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = ["src/"]
 sourceSets.main.scala.srcDirs = ["src/"]
 
+ext {
+    gdxVersion = '1.9.2'
+    roboVMVersion = '1.12.0'
+    box2DLightsVersion = '1.4'
+    ashleyVersion = '1.7.0'
+    aiVersion = '1.8.0'
+}
 
 dependencies {
     compile project(":vainilla-core")
@@ -16,5 +23,5 @@ dependencies {
 }
 
 eclipse.project {
-    name = appName + "-desktop"
+    name = "scala-vanilla-desktop"
 }
