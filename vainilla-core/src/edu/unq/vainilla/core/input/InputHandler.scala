@@ -2,7 +2,9 @@ package edu.unq.vainilla.core.input
 
 import com.badlogic.gdx.InputProcessor
 import edu.unq.vainilla.core.VainillaGame
-import edu.unq.vainilla.core.gamescene.GameScene
+import edu.unq.vainilla.core.gamescene.{GameScene, LayeredGameScene}
+
+import scala.collection.mutable.ListBuffer
 
 object VainillaInputProcessor extends InputProcessor {
   def process[E <: InputEvent](event: E, partialFunction: PartialFunction[E, Unit]): Boolean = {
@@ -69,8 +71,24 @@ trait InputHandler {
   def touchDragged: PartialFunction[TouchDragged, Unit]
 }
 
-trait InputSupport extends GameScene {
+trait InputSupport extends GameScene with InputHandler {
   val inputHandler: InputHandler
+
+  def keyTyped: PartialFunction[KeyTyped, Unit] = inputHandler.keyTyped
+
+  def mouseMoved: PartialFunction[MouseMoved, Unit] = inputHandler.mouseMoved
+
+  def keyDown: PartialFunction[KeyDown, Unit] = inputHandler.keyDown
+
+  def touchDown: PartialFunction[TouchDown, Unit] = inputHandler.touchDown
+
+  def keyUp: PartialFunction[KeyUp, Unit] = inputHandler.keyUp
+
+  def scrolled: PartialFunction[Scrolled, Unit] = inputHandler.scrolled
+
+  def touchUp: PartialFunction[TouchUp, Unit] = inputHandler.touchUp
+
+  def touchDragged: PartialFunction[TouchDragged, Unit] = inputHandler.touchDragged
 }
 
 trait SimpleInputHandler extends InputHandler {
@@ -94,51 +112,69 @@ trait SimpleInputHandler extends InputHandler {
 class BasicInputHandler extends SimpleInputHandler
 
 object SceneDelegatorInputHandler extends InputHandler {
+
+  private def fetchSublayers(scene: LayeredGameScene): ListBuffer[GameScene with InputHandler] = {
+    scene.layers.sortBy(_.z).foldLeft(ListBuffer.empty[GameScene with InputHandler]) {
+      (acc, layer) => layer match {
+        case scene: InputHandler => acc.+=(scene)
+        case scene: LayeredGameScene => acc.++=(fetchSublayers(scene))
+        case _ => acc
+      }
+    }
+  }
+
+  private def composeFunctions[T <: InputEvent](scene: LayeredGameScene, f: InputHandler => PartialFunction[T, Unit]) = {
+    val sublayers = fetchSublayers(scene)
+    sublayers.map(f(_)).foldLeft(doNothing[T]) {
+      _.orElse(_)
+    }
+  }
+
   def keyTyped: PartialFunction[KeyTyped, Unit] = VainillaGame.currentScene match {
     case scene: InputHandler => scene.keyTyped
-    case scene: InputSupport => scene.inputHandler.keyTyped
+    case scene: LayeredGameScene => composeFunctions(scene, _.keyTyped)
     case _ => doNothing
   }
 
   def mouseMoved: PartialFunction[MouseMoved, Unit] = VainillaGame.currentScene match {
     case scene: InputHandler => scene.mouseMoved
-    case scene: InputSupport => scene.inputHandler.mouseMoved
+    case scene: LayeredGameScene => composeFunctions(scene, _.mouseMoved)
     case _ => doNothing
   }
 
   def keyDown: PartialFunction[KeyDown, Unit] = VainillaGame.currentScene match {
     case scene: InputHandler => scene.keyDown
-    case scene: InputSupport => scene.inputHandler.keyDown
+    case scene: LayeredGameScene => composeFunctions(scene, _.keyDown)
     case _ => doNothing
   }
 
   def touchDown: PartialFunction[TouchDown, Unit] = VainillaGame.currentScene match {
     case scene: InputHandler => scene.touchDown
-    case scene: InputSupport => scene.inputHandler.touchDown
+    case scene: LayeredGameScene => composeFunctions(scene, _.touchDown)
     case _ => doNothing
   }
 
   def keyUp: PartialFunction[KeyUp, Unit] = VainillaGame.currentScene match {
     case scene: InputHandler => scene.keyUp
-    case scene: InputSupport => scene.inputHandler.keyUp
+    case scene: LayeredGameScene => composeFunctions(scene, _.keyUp)
     case _ => doNothing
   }
 
   def scrolled: PartialFunction[Scrolled, Unit] = VainillaGame.currentScene match {
     case scene: InputHandler => scene.scrolled
-    case scene: InputSupport => scene.inputHandler.scrolled
+    case scene: LayeredGameScene => composeFunctions(scene, _.scrolled)
     case _ => doNothing
   }
 
   def touchUp: PartialFunction[TouchUp, Unit] = VainillaGame.currentScene match {
     case scene: InputHandler => scene.touchUp
-    case scene: InputSupport => scene.inputHandler.touchUp
+    case scene: LayeredGameScene => composeFunctions(scene, _.touchUp)
     case _ => doNothing
   }
 
   def touchDragged: PartialFunction[TouchDragged, Unit] = VainillaGame.currentScene match {
     case scene: InputHandler => scene.touchDragged
-    case scene: InputSupport => scene.inputHandler.touchDragged
+    case scene: LayeredGameScene => composeFunctions(scene, _.touchDragged)
     case _ => doNothing
   }
 }
