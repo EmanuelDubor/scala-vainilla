@@ -1,4 +1,4 @@
-package edu.unq.vainilla.core
+package edu.unq.vainilla.core.utils
 
 trait LifeCycle {
 

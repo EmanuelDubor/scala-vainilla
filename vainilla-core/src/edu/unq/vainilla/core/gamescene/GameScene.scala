@@ -2,19 +2,19 @@ package edu.unq.vainilla.core.gamescene
 
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import edu.unq.vainilla.core.LifeCycle
+import edu.unq.vainilla.core.utils.{Leaf, LifeCycle, SortedNode, TreeLike}
 
-import scala.collection.mutable.ListBuffer
-
-trait GameScene extends LifeCycle {
+trait GameScene extends LifeCycle with TreeLike[GameScene] with Ordered[GameScene] {
 
   var z = 0
+
+  def compare(that: GameScene): Int = this.z - that.z
 
   def render(implicit spriteBatch: SpriteBatch, deltaTime: Float)
 
 }
 
-trait SimpleGameScene extends GameScene {
+trait SimpleGameScene extends GameScene with Leaf[GameScene] {
 
   implicit var camera: OrthographicCamera = _
 
@@ -30,16 +30,9 @@ trait SimpleGameScene extends GameScene {
   }
 }
 
-trait LayeredGameScene extends GameScene {
-
-  var layers: ListBuffer[GameScene] = _
-
-  override def create: Unit = {
-    super.create
-    layers = ListBuffer.empty[GameScene]
-  }
+trait LayeredGameScene extends GameScene with SortedNode[GameScene] {
 
   def render(implicit spriteBatch: SpriteBatch, deltaTime: Float): Unit = {
-    layers.sortBy(_.z).foreach(_.render)
+    childs.foreach(_.render)
   }
 }
