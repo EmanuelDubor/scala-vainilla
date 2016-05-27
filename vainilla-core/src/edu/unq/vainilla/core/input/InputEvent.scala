@@ -1,6 +1,6 @@
 package edu.unq.vainilla.core.input
 
-import edu.unq.vainilla.core.cords.Cords.ScreenCord
+import edu.unq.vainilla.core.cords.ScreenCord
 
 class InputEvent
 

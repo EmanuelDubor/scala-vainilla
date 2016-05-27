@@ -1,12 +1,12 @@
 package edu.unq.vainilla.core.input
 
 import com.badlogic.gdx.InputProcessor
-import edu.unq.vainilla.core.cords.Cords.ScreenCord
 import edu.unq.vainilla.core.gamescene.{GameScene, LayeredGameScene}
 
 object VainillaInputProcessor extends InputProcessor {
 
   import edu.unq.vainilla.core.VainillaGame.inputHandler
+  import edu.unq.vainilla.core.cords.CordImplicits._
 
   def process[E <: InputEvent](event: E, partialFunction: PartialFunction[E, Unit]): Boolean = {
     val canHandle = partialFunction.isDefinedAt(event)
@@ -20,13 +20,13 @@ object VainillaInputProcessor extends InputProcessor {
     process(KeyTyped(character), inputHandler.keyTyped)
 
   def mouseMoved(screenX: Int, screenY: Int): Boolean =
-    process(MouseMoved(ScreenCord(screenX, screenY)), inputHandler.mouseMoved)
+    process(MouseMoved((screenX, screenY)), inputHandler.mouseMoved)
 
   def keyDown(keycode: Int): Boolean =
     process(KeyDown(keycode), inputHandler.keyDown)
 
   def touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean =
-    process(TouchDown(ScreenCord(screenX, screenY), pointer, button), inputHandler.touchDown)
+    process(TouchDown((screenX, screenY), pointer, button), inputHandler.touchDown)
 
   def keyUp(keycode: Int): Boolean =
     process(KeyUp(keycode), inputHandler.keyUp)
@@ -35,10 +35,10 @@ object VainillaInputProcessor extends InputProcessor {
     process(Scrolled(amount), inputHandler.scrolled)
 
   def touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean =
-    process(TouchUp(ScreenCord(screenX, screenY), pointer, button), inputHandler.touchUp)
+    process(TouchUp((screenX, screenY), pointer, button), inputHandler.touchUp)
 
   def touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean =
-    process(TouchDragged(ScreenCord(screenX, screenY), pointer), inputHandler.touchDragged)
+    process(TouchDragged((screenX, screenY), pointer), inputHandler.touchDragged)
 }
 
 trait InputHandler {
