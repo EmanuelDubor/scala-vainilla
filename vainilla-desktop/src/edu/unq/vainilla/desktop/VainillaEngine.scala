@@ -3,14 +3,14 @@ package edu.unq.vainilla.desktop
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
 import edu.unq.vainilla.core.VainillaGame
 import edu.unq.vainilla.core.configuration.{Configuration, Configurator, SimpleConfiguration}
-import edu.unq.vainilla.core.gamescene.GameScene
+import edu.unq.vainilla.core.gamescene.{BlankScene, GameScene}
 import edu.unq.vainilla.core.input._
 
 import scala.collection.mutable.ListBuffer
 
 object VainillaEngine {
 
-  var mainScene: GameScene = _
+  var mainScene: GameScene = new BlankScene
   var inputHandler: InputHandler = new BasicInputHandler
   val configurators = ListBuffer.empty[Configurator]
 

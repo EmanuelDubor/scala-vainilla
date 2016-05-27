@@ -6,8 +6,9 @@ import com.badlogic.gdx.{ApplicationAdapter, Gdx, InputProcessor}
 import edu.unq.vainilla.core.configuration.Configuration
 import edu.unq.vainilla.core.gamescene.GameScene
 import edu.unq.vainilla.core.input.InputHandler
+import edu.unq.vainilla.core.utils.LifeCycle
 
-object VainillaGame extends ApplicationAdapter {
+object VainillaGame extends ApplicationAdapter with LifeCycle {
 
   var mainScene: GameScene = _
   var currentScene: GameScene = _
@@ -16,7 +17,10 @@ object VainillaGame extends ApplicationAdapter {
   var gdxInputProcessor: InputProcessor = _
   implicit var spriteBatch: SpriteBatch = _
 
+  private var _updateBeforeRender = true
+
   override def create {
+    super.create
     Gdx.input.setInputProcessor(gdxInputProcessor)
     mainScene.create
     currentScene = mainScene
@@ -31,10 +35,21 @@ object VainillaGame extends ApplicationAdapter {
       config.initialBackgroundColor.a
     )
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-    implicit val deltaTime = Gdx.graphics.getDeltaTime
+    implicit val deltaTime = Math.min(Gdx.graphics.getDeltaTime, 1 / 30)
+    if (_updateBeforeRender) currentScene.update
     spriteBatch.begin
     currentScene.render
     spriteBatch.end
+    if (!_updateBeforeRender) currentScene.update
   }
+
+  override def dispose: Unit = {
+    super.dispose
+    spriteBatch.dispose
+  }
+
+  def updateBeforeRender = _updateBeforeRender = true
+
+  def renderBeforeUpdate = _updateBeforeRender = false
 
 }

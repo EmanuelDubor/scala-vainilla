@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import edu.unq.vainilla.core.utils.{LifeCycle, SortedTreeNode, TreeLeaf, TreeLike}
 
 trait GameScene extends LifeCycle with TreeLike[GameScene] with Ordered[GameScene] {
+  implicit var camera: OrthographicCamera = _
 
   private var _z = 0
 
@@ -18,31 +19,41 @@ trait GameScene extends LifeCycle with TreeLike[GameScene] with Ordered[GameScen
     _z = z
   }
 
-  def compare(that: GameScene): Int = this.z - that.z
-
-  def render(implicit spriteBatch: SpriteBatch, deltaTime: Float)
-
-}
-
-trait SimpleGameScene extends GameScene with TreeLeaf[GameScene] {
-
-  implicit var camera: OrthographicCamera = _
-
   override def create: Unit = {
     super.create
     camera = new OrthographicCamera
     camera.setToOrtho(false)
   }
 
-  def render(implicit spriteBatch: SpriteBatch, deltaTime: Float): Unit = {
-    camera.update
+  def compare(that: GameScene): Int = this.z - that.z
+
+  def render(implicit spriteBatch: SpriteBatch) = {
+    camera.update()
+  }
+
+  def update(implicit delta: Float) = {}
+
+}
+
+trait SimpleGameScene extends GameScene with TreeLeaf[GameScene] {
+
+  override def render(implicit spriteBatch: SpriteBatch): Unit = {
+    super.render
     spriteBatch.setProjectionMatrix(camera.combined)
   }
 }
 
 trait LayeredGameScene extends GameScene with SortedTreeNode[GameScene] {
 
-  def render(implicit spriteBatch: SpriteBatch, deltaTime: Float): Unit = {
+  override def render(implicit spriteBatch: SpriteBatch): Unit = {
+    super.render
     childs.foreach(_.render)
   }
+
+  override def update(implicit delta: Float): Unit = {
+    super.update
+    childs.foreach(_.update)
+  }
 }
+
+class BlankScene extends SimpleGameScene
