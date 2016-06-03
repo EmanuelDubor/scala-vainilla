@@ -3,30 +3,20 @@ package edu.unq.vainilla.desktop
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
 import edu.unq.vainilla.core.VainillaGame
 import edu.unq.vainilla.core.configuration.{Configuration, Configurator, SimpleConfiguration}
-import edu.unq.vainilla.core.gamescene.{BlankScene, GameScene}
-import edu.unq.vainilla.core.input._
 
 import scala.collection.mutable.ListBuffer
 
 object VainillaEngine {
 
-  var mainScene: GameScene = new BlankScene
-  var inputHandler: InputHandler = new BasicInputHandler
   val configurators = ListBuffer.empty[Configurator]
 
   def start: Unit = {
     var config: Configuration = new SimpleConfiguration
-    config = configurators.foldLeft(config) { (config, configurator) => configurator.configure(config) }
+    config = configurators.foldLeft(config) { (config, configurator) => configurator(config) }
     VainillaGame.config = config
-    VainillaGame.mainScene = mainScene
-    VainillaGame.inputHandler = inputHandler
-    VainillaGame.gdxInputProcessor = VainillaInputProcessor
 
     new LwjglApplication(VainillaGame, config)
   }
-
-  /** Use this if you want your scenes to handle user input **/
-  def delegateInput = inputHandler = SceneDelegatorInputHandler
 
   implicit def vanillaToLwjgConfiguration(config: Configuration): LwjglApplicationConfiguration = {
     val lwjglConfig = new LwjglApplicationConfiguration

@@ -3,9 +3,8 @@ package edu.unq.vainilla.core.input
 import com.badlogic.gdx.InputProcessor
 import edu.unq.vainilla.core.gamescene.{GameScene, LayeredGameScene}
 
-object VainillaInputProcessor extends InputProcessor {
+case class VainillaInputProcessor(inputHandler: InputHandler) extends InputProcessor {
 
-  import edu.unq.vainilla.core.VainillaGame.inputHandler
   import edu.unq.vainilla.core.cords.CordImplicits._
 
   def process[E <: InputEvent](event: E, partialFunction: PartialFunction[E, Unit]): Boolean = {

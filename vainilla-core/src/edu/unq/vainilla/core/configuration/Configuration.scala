@@ -1,12 +1,16 @@
 package edu.unq.vainilla.core.configuration
 
-import com.badlogic.gdx.Files
 import com.badlogic.gdx.Files.FileType
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.{Files, InputProcessor}
+import edu.unq.vainilla.core.gamescene.{BlankScene, GameScene}
+import edu.unq.vainilla.core.input.{BasicInputHandler, InputHandler, SceneDelegatorInputHandler, VainillaInputProcessor}
 
 import scala.collection.mutable.ArrayBuffer
 
-trait Configuration {
+trait Configuration extends GDXConfiguration with VainillaConfiguration
+
+trait GDXConfiguration {
 
   /** title of application **/
   var title = "My Vanilla Game"
@@ -81,16 +85,45 @@ trait Configuration {
 
   val iconInfo = ArrayBuffer.empty[(String, FileType)]
 
-  /** Adds a window icon. Icons are tried in the order added, the first one that works is used. Typically three icons should be
-    * provided: 128x128 (for Mac), 32x32 (for Windows and Linux), and 16x16 (for Windows). */
+  /**
+    * Adds a window icon. Icons are tried in the order added, the first one that works is used. Typically three icons should be
+    * provided: 128x128 (for Mac), 32x32 (for Windows and Linux), and 16x16 (for Windows).
+    */
   def addIcon(path: String, fileType: FileType): Unit = iconInfo.+=((path, fileType))
 
+  /** Acces GDX directly and override Vainilla input processor at your own risk */
+  val inputProcessor: InputHandler => InputProcessor = VainillaInputProcessor
+
+}
+
+trait VainillaConfiguration {
+
+  /** Your games starting scene */
+  var mainScene: GameScene = new BlankScene
+
+  /** Tells the engine to invoke GameComponent.update before or after rendering */
+  var _updateBeforeRender = true
+
+  def updateBeforeRender = _updateBeforeRender = true
+
+  def renderBeforeUpdate = _updateBeforeRender = false
+
+  /** Provide a concrete InputHandler **/
+  var inputHandler: InputHandler = new BasicInputHandler
+
+  /** Use this if you want your scenes to handle user input **/
+  def delegateInput = inputHandler = SceneDelegatorInputHandler
 }
 
 class SimpleConfiguration extends Configuration
 
 trait Configurator {
 
-  def configure(config: Configuration): Configuration
+  def apply(config: Configuration): Configuration = {
+    configure(config)
+    config
+  }
+
+  def configure(config: Configuration): Unit
 
 }
