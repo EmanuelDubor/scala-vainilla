@@ -8,9 +8,7 @@ import edu.unq.vainilla.core.utils.{TreeLeaf, TreeLike, TreeNode}
 
 trait GameComponent extends TreeLike[GameComponent] {
 
-  var visible: Boolean = true
-
-  var position: Cord2d = (0, 0)
+  var position: Cord2d
 
   def x = position.x
 
@@ -24,10 +22,10 @@ trait GameComponent extends TreeLike[GameComponent] {
 
 }
 
-class SimpleGameComponent(appearence: Appearence) extends GameComponent with TreeLeaf[GameComponent] {
-  def render(implicit spriteBatch: SpriteBatch): Unit = if (visible) spriteBatch.draw(appearence.textureRegion, position.x, position.y)
+class SimpleGameComponent(var appearence: Appearence, var position: Cord2d = (0, 0)) extends GameComponent with TreeLeaf[GameComponent] {
+  def render(implicit spriteBatch: SpriteBatch): Unit = appearence.render(position)
 }
 
-class GameComponentGroup extends GameComponent with TreeNode[GameComponent] {
-  def render(implicit spriteBatch: SpriteBatch): Unit = if (visible) childs.foreach(_.render)
+class GameComponentGroup(var position: Cord2d = (0, 0)) extends GameComponent with TreeNode[GameComponent] {
+  def render(implicit spriteBatch: SpriteBatch): Unit = childs.foreach(_.render)
 }

@@ -26,7 +26,11 @@ object CordImplicits {
 
 }
 
-case class Cord2d(x: Float, y: Float) extends Cord
+case class Cord2d(x: Float, y: Float) extends Cord {
+  def x_=[T](newX: T)(implicit n: Numeric[T]) = Cord2d(n.toFloat(newX), y)
+
+  def y_=[T](newY: T)(implicit n: Numeric[T]) = Cord2d(x, n.toFloat(newY))
+}
 
 object Cord2d {
   def apply(vector3: Vector3): Cord2d = Cord2d(vector3.x, vector3.y)
