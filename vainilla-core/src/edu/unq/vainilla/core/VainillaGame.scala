@@ -30,7 +30,7 @@ object VainillaGame extends ApplicationAdapter with LifeCycle {
       config.initialBackgroundColor.a
     )
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-    implicit val deltaTime = Math.min(Gdx.graphics.getDeltaTime, 1 / 30)
+    implicit val deltaTime = Math.min(Gdx.graphics.getDeltaTime, config.maxUpdateValue)
     if (config._updateBeforeRender) currentScene.update
     spriteBatch.begin
     currentScene.render

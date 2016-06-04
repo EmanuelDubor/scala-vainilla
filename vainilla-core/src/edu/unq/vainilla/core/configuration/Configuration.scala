@@ -113,6 +113,9 @@ trait VainillaConfiguration {
 
   /** Use this if you want your scenes to handle user input **/
   def delegateInput = inputHandler = SceneDelegatorInputHandler
+
+  /** Max delta time allowed */
+  var maxUpdateValue = 1 / 30
 }
 
 class SimpleConfiguration extends Configuration
